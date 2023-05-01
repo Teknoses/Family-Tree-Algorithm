@@ -49,13 +49,13 @@ let count = 0
 
 function setup() {
   //picks two random people
-  personA = random(people)
+  personA = Jack
   print(personA.name + ' is personA')
-  personB = random(people)
+  personB = Annie
   print(personB.name + ' is personB')
   //creates the branch of both people from start to finish
-  branchAfinder(personA)
-  branchBfinder(personB) 
+  branchBfinder(personA, treeA)
+  branchBfinder(personB, treeB) 
   //reverse the order of both branches  
   treeA.reverse()
   treeB.reverse() 
@@ -64,7 +64,7 @@ function setup() {
   console.log(treeB)
   //finds the common ancestor between the two
   commonAncestorGen = findCommonAncestor(0) 
-  commonAncestor = treeA[findCommonAncestor(0)]
+  commonAncestor = treeA[commonAncestorGen]
   print(commonAncestor.name + ' is the common ancestor')
   //Calculates the generations apart between the two people
   depth = treeA.length - treeB.length
@@ -93,21 +93,21 @@ function branchAfinder(person){
   }
 }
 //Same as branchAfinder but for personA
-function branchBfinder(person){
+function branchBfinder(person, treeX){
   count++
   let parent = person.parent
   if(parent != undefined){
-    treeB.push(person)
-   branchBfinder(parent) 
+    treeX.push(person)
+   branchBfinder(parent, treeX) 
   }
   else{
-    treeB.push(person)
+    treeX.push(person)
   }
 }
 //Finds the common ancestor
 function findCommonAncestor(i){
   count++
-  if(treeA[treeA.length - 1].name == treeB[treeB.length - 1].name){
+  if(treeA[treeA.length - 1] == treeB[treeB.length - 1]){
     return (treeA.length - 1)
   }
   //Compares personA and personB lineage for the same person, IF so, continue down the lineages
@@ -131,13 +131,13 @@ function relationship(){
   }
   //IF it is neither of those, then they have to be cousins since all the others have other names
   else{
-    cousinDistance()
+    cousinDistance(lineageDepth, depth)
   }
 }
 //Depending on the depth, caluclates and prints the generation
 function sameLineage(){
     if(depth >= 4){
-      console.log(personB.name + ' is ' + personA.name + "'s " + (depth-1) + 'x great grandparent')
+      console.log(personB.name + ' is ' + personA.name + "'s " + (depth-2) + 'x great grandparent')
     }
     else if(depth == 3){
       console.log(personB.name + ' is ' + personA.name + "'s great grandparent")
@@ -162,13 +162,13 @@ function sameLineage(){
     console.log(personB.name + ' is ' + personA.name + "'s great grandchild")
     }
     else if(depth <= -4){
-     console.log(personB.name + ' is ' + personA.name + "'s " + (Math.abs(depth) - 1) + 'x great grandchild')
+     console.log(personB.name + ' is ' + personA.name + "'s " + (Math.abs(depth) - 2) + 'x great grandchild')
   }
 }
 //Depending on the depth, caluclates and prints the generation
 function oneLineage(){
   if(depth >= 4){
-    console.log(personB.name + ' is ' + personA.name + "'s " + (depth-1) + 'x great grand uncle/aunt')
+    console.log(personB.name + ' is ' + personA.name + "'s " + (depth-2) + 'x great grand uncle/aunt')
   }
   else if(depth == 3){
     console.log(personB.name + ' is ' + personA.name + "'s great grand uncle/aunt")
@@ -179,51 +179,36 @@ function oneLineage(){
   else if(depth == 1){
     console.log(personB.name + ' is ' + personA.name + "'s uncle/aunt")
    }
-  if(depth == 0){
+  else if(depth == 0){
     console.log(personB.name + ' is ' + personA.name + "'s sibling")          
   }
-  if(depth == -1){
+  else if(depth == -1){
     console.log(personB.name + ' is ' + personA.name + "'s niece/nephew")            
   }
-  if(depth == -2){
+  else if(depth == -2){
     console.log(personB.name + ' is ' + personA.name + "'s grand niece/nephew")            
   }
-  if(depth == -3){
+  else if(depth == -3){
     console.log(personB.name + ' is ' + personA.name + "'s great grand niece/nephew")            
   }
-  if(depth <= -4){
-    console.log(personB.name + ' is ' + personA.name + "'s " + (Math.abs(depth) - 1) + 'x great grand niece/nephew')       
+  else if(depth <= -4){
+    console.log(personB.name + ' is ' + personA.name + "'s " + (Math.abs(depth) - 2) + 'x great grand niece/nephew')       
   }
 }
 //Caluclates the cousin 
-function cousinDistance(){
-  let ordinalEnding = ordinal(lineageDepth - 1)
-  let cousinDep = cousinDepth(depth)
+function cousinDistance(linedepth, normaldepth){
+  
+  let ordinalEnding = ordinal(linedepth - 1)
+  let cousinDep = cousinDepth(normaldepth)
   //IF not removed cousins, go here
-  if(cousinDep == ' '){
-    console.log(personB.name + ' is ' + personA.name + ' ' + (lineageDepth - 1) + ordinalEnding + ' cousin')
-  }
-  //IF bigger than 3, continue here since there is no repitive number after 3
-  if(cousinDep == ' times '){
-    console.log(personB.name + ' is ' + personA.name + ' ' + (lineageDepth - 1) + ordinalEnding + ' cousin ' + (Math.abs(depth)) + ' times removed')
-  }
-  //once, twice, and thrice go here
-  if(cousinDep == 'once'){
-    console.log(personB.name + ' is ' + personA.name + ' ' + (lineageDepth - 1) + ordinalEnding + ' cousin ' + 'once removed')
-  }
-  if(cousinDep == 'twice'){
-    console.log(personB.name + ' is ' + personA.name + ' ' + (lineageDepth - 1) + ordinalEnding + ' cousin ' + 'twice removed')
-  }
-  if(cousinDep == 'thrice'){
-    console.log(personB.name + ' is ' + personA.name + ' ' + (lineageDepth - 1) + ordinalEnding + ' cousin ' + 'thrice removed')
-  }
+    console.log(personB.name + ' is ' + personA.name + ' ' + (linedepth - 1) + ordinalEnding + ' cousin' + cousinDep)
 }
 //Returns the correct ordinal number
 function ordinal(number){
   //Module 100 since it does not affect the ending a cardinal number
   number = number % 100
-  //IF the numbers are not 11, 12, or 13, then continue
-  if(number < 13 && number > 11){
+  //IF the numbers are not 11, 12, or 13, then go to ELSE
+  if(number <= 13 && number >= 11){
     //11, 12, 13 are odd and end with 'th' even though it ends with 1, 2, or 3, so exclude from the other search and send back 'th'
     return 'th'
   }
@@ -252,15 +237,15 @@ function cousinDepth(d){
     return ' '
   }
   else if(d == 1){
-    return 'once'
+    return ' once removed'
   }
   else if(d == 2){
-    return 'twice'
+    return ' twice removed'
   }
   else if(d == 3){
-    return 'thrice'
+    return ' thrice removed'
   }
   else{
-    return ' times '
+    return ` ${d} times removed `
   }
 }
